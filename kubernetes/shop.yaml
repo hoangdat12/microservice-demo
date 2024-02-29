@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-app-deployment
+spec:
+  selector:
+    matchLabels:
+      app: shop-app
+  template:
+    metadata:
+      labels:
+        app: shop-app
+    spec:
+      containers:
+        - name: shop-app-container
+          image: hoangdat12/shop-service
+          resources:
+            # limits:
+            #   memory: "128Mi"
+            #   cpu: "500m"
+          ports:
+            - containerPort: 8085
+          env:
+            - name: PSQL_DATABASE_NAME
+              value: shop-service
+            - name: PSQL_PASSWORD
+              value: 01658384066a
+            - name: PSQL_HOST
+              value: postgres-service
+            - name: PSQL_PORT
+              value: '5432'
+            - name: PSQL_USER
+              value: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-app-service
+spec:
+  selector:
+    app: shop-app
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8085
+      targetPort: 8085

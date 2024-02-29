@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-app-deployment
+spec:
+  selector:
+    matchLabels:
+      app: inventory-app
+  template:
+    metadata:
+      labels:
+        app: inventory-app
+    spec:
+      containers:
+        - name: inventory-app-container
+          image: hoangdat12/inventory-service
+          resources:
+            # limits:
+            #   memory: "128Mi"
+            #   cpu: "500m"
+          ports:
+            - containerPort: 8084
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-app-service
+spec:
+  selector:
+    app: inventory-app
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084
